@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>योग आरोग्य केंद्र — ऑनलाइन परीक्षा पोर्टल</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ============================================================
+   योग आरोग्य केंद्र — ऑनलाइन परीक्षा पोर्टल
+   Professional UI / UX  |  Navy-Blue Formal Theme
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b2545;
+  --navy2:#1e3a8a;
+  --navy3:#13315c;
+  --gold:#c9a227;
+  --bg:#eef2f8;
+  --card:#ffffff;
+  --ink:#0f172a;
+  --muted:#5b6b84;
+  --line:#d8e0ec;
+  --ok:#15803d;
+  --bad:#b91c1c;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+}
+h1,h2,h3,h4,.serif{font-family:Georgia,'Times New Roman',serif;font-weight:700;line-height:1.3}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input{font-family:inherit}
+
+/* ---------------- HEADER ---------------- */
+.topbar{
+  background:linear-gradient(120deg,#0b2545 0%,#1e3a8a 100%);
+  color:#fff;padding:15px 26px;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;border-bottom:4px solid var(--gold);
+  position:sticky;top:0;z-index:60;box-shadow:0 4px 18px rgba(11,37,69,.28);
+}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:56px;height:56px;border-radius:50%;background:#fff;color:var(--navy);
+  display:grid;place-items:center;font-size:24px;font-family:Georgia,serif;
+  font-weight:700;border:3px solid var(--gold);flex:none;
+}
+.brand h1{font-size:23px;letter-spacing:.3px}
+.brand p{font-size:12px;color:#c7d5ea;letter-spacing:2.2px;text-transform:uppercase;margin-top:2px}
+.session-tag{
+  font-size:12.5px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.25);padding:8px 16px;border-radius:30px;white-space:nowrap;
+}
+@media(max-width:640px){
+  .brand h1{font-size:17px}.brand p{font-size:10px;letter-spacing:1.4px}
+  .logo{width:44px;height:44px;font-size:19px}.session-tag{display:none}
+}
+
+/* ---------------- VIEWS ---------------- */
+.view{display:none;padding:34px 22px 70px;max-width:1180px;margin:0 auto}
+.view.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------------- LANDING ---------------- */
+.hero{text-align:center;margin-bottom:36px}
+.hero .eyebrow{font-size:12.5px;letter-spacing:3px;text-transform:uppercase;color:var(--navy2);font-weight:700}
+.hero h2{font-size:34px;color:var(--navy);margin-top:10px}
+.hero p{color:var(--muted);margin-top:10px;font-size:15.5px}
+.hero .rule{width:90px;height:4px;background:var(--gold);margin:18px auto 0;border-radius:2px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:26px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;
+  box-shadow:0 10px 30px rgba(11,37,69,.08);position:relative;overflow:hidden;transition:.25s;
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2))}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(11,37,69,.16)}
+.card .icon{
+  width:64px;height:64px;border-radius:14px;display:grid;place-items:center;
+  font-size:30px;background:#e8eefb;color:var(--navy2);margin-bottom:16px;
+}
+.card h3{font-size:22px;color:var(--navy)}
+.card p{color:var(--muted);font-size:15px;margin:8px 0 20px}
+.info-strip{
+  margin-top:30px;background:#fff;border:1px solid var(--line);border-left:6px solid var(--gold);
+  border-radius:12px;padding:18px 22px;font-size:14.5px;color:var(--muted);
+}
+.info-strip b{color:var(--navy)}
+
+/* ---------------- BUTTONS ---------------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 22px;border-radius:10px;font-size:15px;font-weight:600;
+  background:var(--navy2);color:#fff;transition:.2s;text-decoration:none;
+}
+.btn:hover{background:var(--navy)}
+.btn.ghost{background:#fff;color:var(--navy2);border:1.5px solid var(--navy2)}
+.btn.ghost:hover{background:#eef3fd}
+.btn.gold{background:var(--gold);color:#2b2200}
+.btn.gold:hover{background:#b8911f}
+.btn.danger{background:#b91c1c}
+.btn.danger:hover{background:#991b1b}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.block{width:100%}
+
+/* ---------------- FORMS ---------------- */
+.panel{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;
+  max-width:520px;margin:0 auto;box-shadow:0 14px 40px rgba(11,37,69,.1);position:relative;overflow:hidden;
+}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2))}
+.panel h3{font-size:22px;color:var(--navy);margin-bottom:6px}
+.panel .sub{font-size:14px;color:var(--muted);margin-bottom:22px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px}
+.field input{
+  width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;
+  font-size:15px;background:#fbfcfe;transition:.2s;
+}
+.field input:focus{border-color:var(--navy2);background:#fff;
+  box-shadow:0 0 0 4px rgba(30,58,138,.1);outline:none}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px}
+.alert{padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px;display:none}
+.alert.show{display:block}
+.alert.error{background:#fee2e2;color:#991b1b;border-left:4px solid #b91c1c}
+.alert.ok{background:#dcfce7;color:#166534;border-left:4px solid #15803d}
+.rules{margin-top:20px;background:#f7f9fd;border:1px dashed var(--line);border-radius:12px;padding:16px 18px}
+.rules h4{font-size:14px;color:var(--navy);margin-bottom:8px}
+.rules ul{list-style:none;font-size:13px;color:var(--muted);display:grid;gap:6px}
+.rules li::before{content:'▸ ';color:var(--gold);font-weight:700}
+
+/* ---------------- EXAM ---------------- */
+.exam-shell{
+  background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  box-shadow:0 14px 40px rgba(11,37,69,.12);user-select:none;
+}
+.exam-head{
+  background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;
+  padding:15px 22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+}
+.exam-head .title{font-family:Georgia,serif;font-size:16.5px}
+.exam-head .who{font-size:13px;color:#c7d5ea}
+.timer{
+  font-family:Georgia,serif;font-size:22px;font-weight:700;background:rgba(255,255,255,.12);
+  padding:6px 20px;border-radius:30px;border:1px solid rgba(255,255,255,.25);letter-spacing:1.5px;
+}
+.timer.low{background:#b91c1c;border-color:#fca5a5;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.vbox{
+  font-size:13px;font-weight:700;background:rgba(255,255,255,.12);padding:8px 16px;
+  border-radius:30px;border:1px solid rgba(255,255,255,.25);
+}
+.vbox.warn{background:#b91c1c;border-color:#fca5a5}
+.exam-body{display:grid;grid-template-columns:1fr 300px}
+@media(max-width:900px){.exam-body{grid-template-columns:1fr}}
+.q-panel{padding:28px}
+.q-meta{
+  display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);
+  letter-spacing:1.2px;text-transform:uppercase;font-weight:700;
+  border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:20px;
+}
+.q-text{font-family:Georgia,serif;font-size:21px;color:var(--navy);line-height:1.6;margin-bottom:24px}
+.option{
+  display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border:1.5px solid var(--line);
+  border-radius:12px;margin-bottom:12px;cursor:pointer;transition:.18s;background:#fbfcfe;
+}
+.option:hover{border-color:var(--navy2);background:#f2f6fd}
+.option.selected{border-color:var(--navy2);background:#e8eefb;box-shadow:0 0 0 3px rgba(30,58,138,.12)}
+.option .key{
+  width:32px;height:32px;flex:none;border-radius:50%;background:#e2e8f0;color:var(--navy);
+  display:grid;place-items:center;font-weight:700;font-family:Georgia,serif;
+}
+.option.selected .key{background:var(--navy2);color:#fff}
+.option span.txt{font-size:16px;padding-top:4px}
+.q-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;padding-top:20px;border-top:1px dashed var(--line)}
+.q-actions .spacer{flex:1}
+.palette{background:#f7f9fd;border-left:1px solid var(--line);padding:22px}
+@media(max-width:900px){.palette{border-left:none;border-top:1px solid var(--line)}}
+.palette h3{font-size:16px;color:var(--navy);margin-bottom:14px}
+.palette-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.pbtn{
+  aspect-ratio:1;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+  font-weight:700;color:var(--muted);font-size:15px;transition:.18s;
+}
+.pbtn.answered{background:var(--ok);color:#fff;border-color:var(--ok)}
+.pbtn.current{outline:3px solid var(--gold);outline-offset:2px}
+.legend{font-size:12.5px;color:var(--muted);display:grid;gap:8px;margin-bottom:14px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.progress-line{font-size:13px;color:var(--navy);font-weight:600;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;text-align:center}
+
+/* ---------------- WARNING BANNER ---------------- */
+.warning-banner{
+  position:fixed;top:0;left:0;right:0;background:#b91c1c;color:#fff;padding:14px 22px;
+  display:none;align-items:center;gap:14px;z-index:999;font-weight:700;font-size:15px;
+  box-shadow:0 8px 30px rgba(185,28,28,.5);animation:drop .3s ease;
+}
+.warning-banner.show{display:flex}
+@keyframes drop{from{transform:translateY(-100%)}to{transform:none}}
+.warning-banner .siren{font-size:20px;animation:pulse .6s infinite}
+
+/* ---------------- FULLSCREEN RESTORE ---------------- */
+.fs-restore{
+  position:fixed;bottom:22px;right:22px;z-index:800;background:var(--gold);color:#2b2200;
+  padding:12px 22px;border-radius:30px;font-weight:700;display:none;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+.fs-restore.show{display:block}
+
+/* ---------------- MODAL ---------------- */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(11,37,69,.65);display:none;place-items:center;
+  z-index:900;padding:20px;
+}
+.modal-backdrop.show{display:grid}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:470px;width:100%;
+  box-shadow:0 30px 70px rgba(0,0,0,.35);animation:fade .25s ease}
+.modal h3{color:var(--navy);font-size:20px;margin-bottom:10px}
+.modal p{color:var(--muted);font-size:15px;margin-bottom:22px}
+.modal-actions{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ---------------- RESULT ---------------- */
+.score-card{background:#fff;border-radius:16px;border:1px solid var(--line);overflow:hidden;
+  box-shadow:0 14px 40px rgba(11,37,69,.1)}
+.score-head{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;padding:28px;text-align:center}
+.score-head h2{font-size:26px}
+.score-head p{font-size:14px;color:#c7d5ea;margin-top:6px}
+.score-head .status{display:inline-block;margin-top:14px;padding:9px 30px;border-radius:30px;
+  font-weight:700;letter-spacing:1.5px;font-size:15px}
+.status.pass{background:#16a34a}
+.status.fail{background:#b91c1c}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line)}
+.stat{background:#fff;padding:20px;text-align:center}
+.stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.stat .v{font-family:Georgia,serif;font-size:26px;font-weight:700;color:var(--navy2);margin-top:6px}
+.res-foot{padding:20px 26px;background:#f7f9fd;font-size:13.5px;color:var(--muted);
+  display:grid;gap:6px;border-top:1px solid var(--line)}
+.res-foot b{color:var(--navy)}
+.result-note{
+  margin-top:22px;background:#fffbeb;border:1px solid #fde68a;border-left:6px solid var(--gold);
+  border-radius:12px;padding:16px 20px;font-size:14px;color:#78350f;
+}
+.result-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px;justify-content:center}
+
+/* ---------------- ADMIN TABLE ---------------- */
+.table-wrap{overflow-x:auto;background:#fff;border-radius:14px;border:1px solid var(--line);
+  box-shadow:0 10px 30px rgba(11,37,69,.08)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{background:var(--navy);color:#fff;text-align:left;padding:14px;font-weight:600;
+  font-size:12.5px;letter-spacing:.6px;white-space:nowrap;text-transform:uppercase}
+td{padding:13px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#fafcff}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);font-size:15px}
+.admin-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;
+  align-items:center;margin-bottom:20px}
+.admin-bar h2{color:var(--navy);font-size:24px}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">ॐ</div>
+    <div>
+      <h1 id="brandName">योग आरोग्य केंद्र</h1>
+      <p>ऑनलाइन परीक्षा पोर्टल</p>
+    </div>
+  </div>
+  <div class="session-tag" id="sessionTag">सत्र 2025–26</div>
+</header>
+
+<!-- ================= WARNING BANNER ================= -->
+<div class="warning-banner" id="warningBanner">
+  <span class="siren">⚠</span>
+  <span id="warningText">चेतावनी</span>
+</div>
+
+<!-- ================= FULLSCREEN RESTORE ================= -->
+<button class="fs-restore" id="fsRestore">⛶ फुलस्क्रीन में लौटें</button>
+
+<!-- ================= MAIN ================= -->
+<main>
+
+  <!-- ---------- LANDING ---------- -->
+  <section id="view-landing" class="view active">
+    <div class="hero">
+      <div class="eyebrow">Official Examination Portal</div>
+      <h2 id="landingTitle">कक्षा 5 — साइंस ओलंपियाड</h2>
+      <p id="landingSub">ऑनलाइन परीक्षा पोर्टल में आपका स्वागत है। कृपया अपनी भूमिका चुनें।</p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🎓</div>
+        <h3>छात्र पोर्टल</h3>
+        <p>परीक्षा प्रारंभ करने के लिए अपना नाम, पासवर्ड एवं एडमिन द्वारा दिया गया गुप्त एक्सेस कोड दर्ज करें।</p>
+        <button class="btn block" id="goStudent">छात्र लॉगिन →</button>
+      </div>
+
+      <div class="card">
+        <div class="icon">🛡️</div>
+        <h3>एडमिन लॉगिन</h3>
+        <p>परीक्षा परिणाम देखने, उत्तर पुस्तिका PDF डाउनलोड करने एवं रिकॉर्ड प्रबंधन हेतु लॉगिन करें।</p>
+        <button class="btn ghost block" id="goAdmin">एडमिन लॉगिन →</button>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <b>महत्वपूर्ण सूचना:</b> परीक्षा प्रारंभ होते ही फुलस्क्रीन मोड स्वतः चालू हो जाएगा।
+      टैब बदलना, विंडो से बाहर जाना, राइट-क्लिक, कॉपी-पेस्ट अथवा कोई भी असामाजिक गतिविधि
+      <b>3 चेतावनियों</b> के बाद परीक्षा स्वतः जमा कर देगी।
+    </div>
+  </section>
+
+  <!-- ---------- STUDENT LOGIN ---------- -->
+  <section id="view-student-login" class="view">
+    <div class="panel">
+      <h3>छात्र लॉगिन</h3>
+      <p class="sub" id="studentExamTitle">कक्षा 5 — साइंस ओलंपियाड</p>
+
+      <div class="alert" id="studentAlert"></div>
+
+      <form id="studentLoginForm" autocomplete="off">
+        <div class="field">
+          <label for="sName">छात्र का पूरा नाम</label>
+          <input type="text" id="sName" placeholder="जैसे: आरव शर्मा" required />
+        </div>
+
+        <div class="field">
+          <label for="sPass">पासवर्ड</label>
+          <input type="password" id="sPass" placeholder="नाम के पहले 4 अक्षर + 1234" required />
+          <div class="hint">उदाहरण — नाम: <b>आरव शर्मा</b> → पासवर्ड: <b>आरवश1234</b></div>
+        </div>
+
+        <div class="field">
+          <label for="sCode">गुप्त एक्सेस कोड (एडमिन द्वारा प्रदान)</label>
+          <input type="text" id="sCode" placeholder="Master Access Code" required />
+          <div class="hint">यह कोड एडमिन द्वारा परीक्षा से पूर्व घोषित किया जाता है।</div>
+        </div>
+
+        <button type="submit" class="btn block">परीक्षा प्रारंभ करें</button>
+      </form>
+
+      <div class="rules">
+        <h4>परीक्षा नियम</h4>
+        <ul>
+          <li>कुल समय: <b id="ruleDuration">15 मिनट</b> — समय समाप्त होते ही परीक्षा स्वतः जमा।</li>
+          <li>प्रत्येक प्रश्न <b id="ruleMarks">1 अंक</b> का है।</li>
+          <li>फुलस्क्रीन मोड अनिवार्य है — बाहर आने पर चेतावनी।</li>
+          <li>टैब/विंडो बदलना, कॉपी-पेस्ट, राइट-क्लिक पूर्णतः वर्जित।</li>
+          <li>3 चेतावनियों के बाद उत्तर पुस्तिका स्वतः जमा हो जाएगी।</li>
+          <li>एक बार परीक्षा देने के बाद उसी नाम से दोबारा प्रवेश संभव नहीं।</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:18px;text-align:center">
+        <button class="btn ghost" id="backFromStudent" style="padding:9px 18px;font-size:14px">← मुख्य पृष्ठ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- ADMIN LOGIN ---------- -->
+  <section id="view-admin-login" class="view">
+    <div class="panel" style="max-width:440px">
+      <h3>एडमिन लॉगिन</h3>
+      <p class="sub">केवल अधिकृत परीक्षा नियंत्रक हेतु</p>
+
+      <div class="alert" id="adminAlert"></div>
+
+      <form id="adminLoginForm" autocomplete="off">
+        <div class="field">
+          <label for="aPass">एडमिन पासवर्ड</label>
+          <input type="password" id="aPass" placeholder="एडमिन पासवर्ड दर्ज करें" required />
+        </div>
+        <button type="submit" class="btn block">लॉगिन करें</button>
+      </form>
+
+      <div style="margin-top:18px;text-align:center">
+        <button class="btn ghost" id="backFromAdmin" style="padding:9px 18px;font-size:14px">← मुख्य पृष्ठ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- EXAM ---------- -->
+  <section id="view-exam" class="view">
+    <div class="exam-shell">
+      <div class="exam-head">
+        <div>
+          <div class="title" id="examHeadTitle">कक्षा 5 — साइंस ओलंपियाड</div>
+          <div class="who" id="examHeadWho">छात्र: —</div>
+        </div>
+        <div class="timer" id="timerBox">00:00</div>
+        <div class="vbox" id="violationBox">उल्लंघन: 0 / 3</div>
+      </div>
+
+      <div class="exam-body">
+        <div class="q-panel">
+          <div class="q-meta">
+            <span id="qCounter">प्रश्न 1 / 5</span>
+            <span id="qMarks">1 अंक</span>
+          </div>
+          <h2 class="q-text" id="qText">—</h2>
+          <div id="qOptions"></div>
+
+          <div class="q-actions">
+            <button class="btn ghost" id="btnPrev">← पिछला</button>
+            <button class="btn ghost" id="btnClear">उत्तर हटाएँ</button>
+            <button class="btn ghost" id="btnNext">अगला →</button>
+            <div class="spacer"></div>
+            <button class="btn danger" id="btnSubmit">परीक्षा जमा करें</button>
+          </div>
+        </div>
+
+        <aside class="palette">
+          <h3>प्रश्न सूची</h3>
+          <div class="palette-grid" id="paletteGrid"></div>
+          <div class="legend">
+            <div><i style="background:#15803d"></i>उत्तर दिया गया</div>
+            <div><i style="background:#ffffff;border:1.5px solid #d8e0ec"></i>शेष प्रश्न</div>
+            <div><i style="background:#c9a227"></i>वर्तमान प्रश्न</div>
+          </div>
+          <div class="progress-line" id="progressInfo">उत्तर दिए: 0 / 5</div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- RESULT ---------- -->
+  <section id="view-result" class="view">
+    <div class="score-card">
+      <div class="score-head">
+        <h2>परीक्षा परिणाम</h2>
+        <p id="resExamTitle">—</p>
+        <div class="status pass" id="resStatus">उत्तीर्ण</div>
+      </div>
+      <div class="stat-grid" id="resStats"></div>
+      <div class="res-foot" id="resFoot"></div>
+    </div>
+
+    <div class="result-note">
+      <b>सूचना:</b> परीक्षा समाप्त हो चुकी है — अब प्रश्न एवं विकल्प स्थायी रूप से छिपा दिए गए हैं।
+      आपकी सम्पूर्ण उत्तर पुस्तिका (प्रश्न, आपके उत्तर, सही उत्तर, अंक एवं स्कोर कार्ड) एक
+      <b>पासवर्ड-सुरक्षित PDF</b> में उपलब्ध है, जिसे केवल एडमिन ही खोल सकता है।
+    </div>
+
+    <div class="result-actions">
+      <button class="btn gold" id="btnDownloadPdf">🔒 पासवर्ड-सुरक्षित PDF डाउनलोड करें</button>
+      <button class="btn ghost" id="btnBackHome">मुख्य पृष्ठ पर जाएँ</button>
+    </div>
+  </section>
+
+  <!-- ---------- ADMIN DASHBOARD ---------- -->
+  <section id="view-admin" class="view">
+    <div class="admin-bar">
+      <h2>एडमिन डैशबोर्ड — परीक्षा परिणाम</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ghost" id="btnAdminRefresh" style="padding:9px 16px;font-size:14px">↻ रिफ्रेश</button>
+        <button class="btn ghost" id="btnAdminLogout" style="padding:9px 16px;font-size:14px">लॉगआउट</button>
+        <button class="btn danger" id="btnAdminClear" style="padding:9px 16px;font-size:14px">सभी रिकॉर्ड हटाएँ</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>छात्र का नाम</th>
+            <th>रोल आईडी</th>
+            <th>जमा समय</th>
+            <th>प्राप्तांक</th>
+            <th>प्रतिशत</th>
+            <th>परिणाम</th>
+            <th>उल्लंघन</th>
+            <th>उत्तर पुस्तिका</th>
+          </tr>
+        </thead>
+        <tbody id="adminTbody"></tbody>
+      </table>
+      <div class="empty-state" id="adminEmpty" style="display:none">अभी तक कोई परीक्षा परिणाम सुरक्षित नहीं है।</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3 id="modalTitle">पुष्टि करें</h3>
+    <p id="modalMsg">—</p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancel">रद्द करें</button>
+      <button class="btn" id="modalOk">पुष्टि करें</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONFIG ================= -->
+<script src="questions.js"></script>
+
+<!-- ================= APPLICATION ================= -->
+<script>
+/* ============================================================
+   योग आरोग्य केंद्र — ऑनलाइन परीक्षा पोर्टल
+   Core Application Logic
+   ============================================================ */
+(function () {
+  "use strict";
+
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+
+  const CFG = (typeof EXAM_CONFIG !== "undefined") ? EXAM_CONFIG : null;
+
+  /* ---------------- STATE ---------------- */
+  const state = {
+    student: null,
+    answers: [],
+    current: 0,
+    violations: 0,
+    remaining: 0,
+    startTime: 0,
+    timerId: null,
+    submitted: false,
+    lastViolationAt: 0,
+    lastResult: null
+  };
+  let examActive = false;
+  let audioCtx = null;
+
+  /* ---------------- STORAGE KEYS ---------------- */
+  const RESULTS_KEY = "yak_exam_results_v1";
+  const lockKey = (name) => "yak_lock_" + String(name || "").trim().replace(/\s+/g, "").toLowerCase();
+
+  /* ============================================================
+     VIEW SWITCHING
+     ============================================================ */
+  function showView(id) {
+    $$(".view").forEach((v) => v.classList.toggle("active", v.id === id));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ============================================================
+     INIT
+     ============================================================ */
+  document.addEventListener("DOMContentLoaded", init);
+
+  function init() {
+    if (!CFG || !Array.isArray(CFG.questions) || CFG.questions.length === 0) {
+      document.body.innerHTML =
+        '<div style="padding:50px;font-family:sans-serif;color:#b91c1c;text-align:center">' +
+        '<h2>त्रुटि</h2><p>questions.js फ़ाइल लोड नहीं हो सकी या उसमें प्रश्न उपलब्ध नहीं हैं।</p></div>';
+      return;
+    }
+
+    /* Header / branding */
+    $("#brandName").textContent = CFG.instituteName || "योग आरोग्य केंद्र";
+    $("#sessionTag").textContent = "सत्र " + (CFG.session || "2025–26");
+    $("#landingTitle").textContent = CFG.examTitle || "ऑनलाइन परीक्षा";
+    $("#studentExamTitle").textContent = CFG.examTitle || "";
+    $("#examHeadTitle").textContent = CFG.examTitle || "";
+    $("#ruleDuration").textContent = CFG.durationMinutes + " मिनट";
+    $("#ruleMarks").textContent = CFG.marksPerQuestion + " अंक";
+
+    bindEvents();
+  }
+
+  /* ============================================================
+     EVENT BINDING
+     ============================================================ */
+  function bindEvents() {
+    $("#goStudent").addEventListener("click", () => showView("view-student-login"));
+    $("#goAdmin").addEventListener("click", () => showView("view-admin-login"));
+    $("#backFromStudent").addEventListener("click", () => showView("view-landing"));
+    $("#backFromAdmin").addEventListener("click", () => showView("view-landing"));
+
+    $("#studentLoginForm").addEventListener("submit", onStudentLogin);
+    $("#adminLoginForm").addEventListener("submit", onAdminLogin);
+
+    $("#btnPrev").addEventListener("click", () => goTo(state.current - 1));
+    $("#btnNext").addEventListener("click", () => goTo(state.current + 1));
+    $("#btnClear").addEventListener("click", () => {
+      state.answers[state.current] = null;
+      renderQuestion(); renderPalette();
+    });
+    $("#btnSubmit").addEventListener("click", onManualSubmit);
+
+    $("#btnDownloadPdf").addEventListener("click", () => {
+      if (state.lastResult) downloadPDF(state.lastResult);
+    });
+    $("#btnBackHome").addEventListener("click", () => showView("view-landing"));
+
+    $("#btnAdminRefresh").addEventListener("click", renderAdminTable);
+    $("#btnAdminLogout").addEventListener("click", () => {
+      $("#aPass").value = "";
+      showView("view-landing");
+    });
+    $("#btnAdminClear").addEventListener("click", async () => {
+      const ok = await askConfirm("सभी रिकॉर्ड हटाएँ?", "यह क्रिया स्थायी है। सभी छात्रों के परिणाम एवं लॉक हटा दिए जाएँगे।", "हाँ, हटाएँ");
+      if (!ok) return;
+      localStorage.removeItem(RESULTS_KEY);
+      // सभी छात्र लॉक हटाएँ
+      Object.keys(localStorage).forEach((k) => {
+        if (k.indexOf("yak_lock_") === 0) localStorage.removeItem(k);
+      });
+      renderAdminTable();
+    });
+
+    $("#fsRestore").addEventListener("click", requestFullscreen);
+  }
+
+  /* ============================================================
+     STUDENT LOGIN  (नाम + पासवर्ड + मास्टर एक्सेस कोड)
+     ============================================================ */
+  function expectedPassword(name) {
+    const clean = String(name || "").trim().replace(/\s+/g, "");
+    return (clean.slice(0, 4) + "1234").toLowerCase();
+  }
+
+  function onStudentLogin(e) {
+    e.preventDefault();
+    const name = $("#sName").value.trim();
+    const pass = $("#sPass").value;
+    const code = $("#sCode").value.trim();
+    const box = $("#studentAlert");
+
+    const fail = (msg) => {
+      box.className = "alert error show";
+      box.textContent = msg;
+    };
+
+    if (name.length < 2) return fail("कृपया अपना पूरा नाम दर्ज करें।");
+
+    if (localStorage.getItem(lockKey(name))) {
+      return fail("इस नाम से परीक्षा पहले ही दी जा चुकी है। सुरक्षा नियमों के अनुसार दोबारा प्रवेश संभव नहीं है।");
+    }
+
+    if (String(pass).trim().toLowerCase() !== expectedPassword(name)) {
+      return fail("पासवर्ड गलत है। पासवर्ड = नाम के पहले 4 अक्षर + 1234");
+    }
+
+    if (code !== String(CFG.examAccessCode)) {
+      return fail("गुप्त एक्सेस कोड गलत है। कृपया एडमिन से सही मास्टर कोड प्राप्त करें।");
+    }
+
+    box.className = "alert";
+    box.textContent = "";
+
+    startExam({ name: name });
+  }
+
+  /* ============================================================
+     ADMIN LOGIN
+     ============================================================ */
+  function onAdminLogin(e) {
+    e.preventDefault();
+    const pass = $("#aPass").value;
+    const box = $("#adminAlert");
+
+    if (pass !== String(CFG.adminPassword)) {
+      box.className = "alert error show";
+      box.textContent = "एडमिन पासवर्ड गलत है।";
+      return;
+    }
+
+    box.className = "alert";
+    box.textContent = "";
+    $("#aPass").value = "";
+    renderAdminTable();
+    showView("view-admin");
+  }
+
+  /* ============================================================
+     EXAM START
+     ============================================================ */
+  function startExam(student) {
+    state.student = student;
+    state.answers = new Array(CFG.questions.length).fill(null);
+    state.current = 0;
+    state.violations = 0;
+    state.submitted = false;
+    state.lastViolationAt = 0;
+    state.startTime = Date.now();
+    state.remaining = Number(CFG.durationMinutes) * 60;
+
+    examActive = true;
+
+    $("#examHeadWho").textContent = "छात्र: " + student.name;
+    updateViolationUI();
+    updateTimerUI();
+    renderQuestion();
+    renderPalette();
+
+    showView("view-exam");
+
+    initAudio();          // user-gesture के बाद AudioContext
+    requestFullscreen();
+    attachGuards();
+    startTimer();
+  }
+
+  /* ============================================================
+     TIMER
+     ============================================================ */
+  function startTimer() {
+    clearInterval(state.timerId);
+    state.timerId = setInterval(() => {
+      state.remaining--;
+      updateTimerUI();
+      if (state.remaining <= 0) {
+        clearInterval(state.timerId);
+        submitExam(true, "निर्धारित समय समाप्त");
+      }
+    }, 1000);
+  }
+
+  function updateTimerUI() {
+    const m = Math.max(0, Math.floor(state.remaining / 60));
+    const s = Math.max(0, state.remaining % 60);
+    const box = $("#timerBox");
+    box.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    box.classList.toggle("low", state.remaining <= 60);
+  }
+
+  function updateViolationUI() {
+    const box = $("#violationBox");
+    box.textContent = "उल्लंघन: " + state.violations + " / " + CFG.maxViolations;
+    box.classList.toggle("warn", state.violations > 0);
+  }
+
+  /* ============================================================
+     QUESTION RENDERING
+     ============================================================ */
+  function goTo(i) {
+    if (i < 0 || i >= CFG.questions.length) return;
+    state.current = i;
+    renderQuestion();
+    renderPalette();
+  }
+
+  function renderQuestion() {
+    const q = CFG.questions[state.current];
+    $("#qCounter").textContent = "प्रश्न " + (state.current + 1) + " / " + CFG.questions.length;
+    $("#qMarks").textContent = CFG.marksPerQuestion + " अंक";
+    $("#qText").textContent = q.question;
+
+    const box = $("#qOptions");
+    box.innerHTML = "";
+
+    q.options.forEach((op, i) => {
+      const div = document.createElement("div");
+      div.className = "option" + (state.answers[state.current] === i ? " selected" : "");
+
+      const key = document.createElement("div");
+      key.className = "key";
+      key.textContent = String.fromCharCode(65 + i);
+
+      const txt = document.createElement("span");
+      txt.className = "txt";
+      txt.textContent = op;
+
+      div.appendChild(key);
+      div.appendChild(txt);
+      div.addEventListener("click", () => {
+        state.answers[state.current] = i;
+        renderQuestion();
+        renderPalette();
+      });
+      box.appendChild(div);
+    });
+
+    $("#btnPrev").disabled = state.current === 0;
+    $("#btnNext").disabled = state.current === CFG.questions.length - 1;
+
+    updateProgress();
+  }
+
+  function renderPalette() {
+    const grid = $("#paletteGrid");
+    grid.innerHTML = "";
+
+    CFG.questions.forEach((q, i) => {
+      const b = document.createElement("button");
+      b.className = "pbtn" +
+        (state.answers[i] !== null ? " answered" : "") +
+        (i === state.current ? " current" : "");
+      b.textContent = i + 1;
+      b.addEventListener("click", () => goTo(i));
+      grid.appendChild(b);
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const done = state.answers.filter((a) => a !== null).length;
+    $("#progressInfo").textContent = "उत्तर दिए: " + done + " / " + CFG.questions.length;
+  }
+
+  /* ============================================================
+     AUDIO BEEP (Web Audio API)
+     ============================================================ */
+  function initAudio() {
+    try {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    } catch (e) { /* silent */ }
+  }
+
+  function playBeep() {
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      const t = audioCtx.currentTime;
+      const pattern = [
+        { at: 0.00, freq: 950 },
+        { at: 0.20, freq: 720 },
+        { at: 0.40, freq: 950 }
+      ];
+      pattern.forEach((p) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.value = p.freq;
+        gain.gain.setValueAtTime(0.0001, t + p.at);
+        gain.gain.exponentialRampToValueAtTime(0.32, t + p.at + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + p.at + 0.16);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t + p.at);
+        osc.stop(t + p.at + 0.18);
+      });
+    } catch (e) { /* silent */ }
+  }
+
+  /* ============================================================
+     ANTI-CHEAT GUARDS
+     ============================================================ */
+  function attachGuards() {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("blur", onWindowBlur);
+    document.addEventListener("contextmenu", onContextMenu);
+    document.addEventListener("copy", onCopyCutPaste);
+    document.addEventListener("cut", onCopyCutPaste);
+    document.addEventListener("paste", onCopyCutPaste);
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("selectstart", onSelectStart);
+    document.addEventListener("dragstart", onSelectStart);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+  }
+
+  function detachGuards() {
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    window.removeEventListener("blur", onWindowBlur);
+    document.removeEventListener("contextmenu", onContextMenu);
+    document.removeEventListener("copy", onCopyCutPaste);
+    document.removeEventListener("cut", onCopyCutPaste);
+    document.removeEventListener("paste", onCopyCutPaste);
+    document.removeEventListener("keydown", onKeyDown, true);
+    document.removeEventListener("selectstart", onSelectStart);
+    document.removeEventListener("dragstart", onSelectStart);
+    document.removeEventListener("fullscreenchange", onFullscreenChange);
+    document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+  }
+
+  function onVisibilityChange() {
+    if (document.hidden) registerViolation("टैब अथवा विंडो बदलना वर्जित है");
+  }
+
+  function onWindowBlur() {
+    registerViolation("परीक्षा विंडो से बाहर जाना वर्जित है");
+  }
+
+  function onContextMenu(e) {
+    if (!examActive) return;
+    e.preventDefault();
+    registerViolation("राइट-क्लिक वर्जित है");
+  }
+
+  function onCopyCutPaste(e) {
+    if (!examActive) return;
+    e.preventDefault();
+    registerViolation("कॉपी / कट / पेस्ट वर्जित है");
+  }
+
+  function onSelectStart(e) {
+    if (!examActive) return;
+    e.preventDefault();
+  }
+
+  function onKeyDown(e) {
+    if (!examActive) return;
+    const k = String(e.key || "").toLowerCase();
+    const ctrl = e.ctrlKey || e.metaKey;
+    let blocked = false;
+
+    if (e.key === "F12") blocked = true;
+    if (ctrl && e.shiftKey && ["i", "j", "c"].indexOf(k) !== -1) blocked = true;
+    if (ctrl && ["c", "v", "x", "a", "p", "s", "u"].indexOf(k) !== -1) blocked = true;
+    if (e.key === "PrintScreen") blocked = true;
+
+    if (blocked) {
+      e.preventDefault();
+      e.stopPropagation();
+      registerViolation("कीबोर्ड शॉर्टकट / कॉपी-पेस्ट वर्जित है");
+      return false;
+    }
+  }
+
+  function onFullscreenChange() {
+    if (!examActive || state.submitted) return;
+    const fs = document.fullscreenElement || document.webkitFullscreenElement;
+    if (!fs) {
+      $("#fsRestore").classList.add("show");
+      registerViolation("फुलस्क्रीन मोड से बाहर आना वर्जित है");
+    } else {
+      $("#fsRestore").classList.remove("show");
+    }
+  }
+
+  /* ---------------- VIOLATION ENGINE ---------------- */
+  function registerViolation(reason) {
+    if (!examActive || state.submitted) return;
+
+    const now = Date.now();
+    if (now - state.lastViolationAt < 1200) return; // डिबाउंस
+    state.lastViolationAt = now;
+
+    state.violations++;
+    playBeep();
+    showWarning("चेतावनी " + state.violations + " / " + CFG.maxViolations + " — " + reason);
+    updateViolationUI();
+
+    if (state.violations >= Number(CFG.maxViolations)) {
+      submitExam(true, "नियमों का उल्लंघन — " + CFG.maxViolations + " चेतावनियाँ पूर्ण");
+    }
+  }
+
+  let warningTimer = null;
+  function showWarning(text) {
+    const b = $("#warningBanner");
+    $("#warningText").textContent = text;
+    b.classList.add("show");
+    clearTimeout(warningTimer);
+    warningTimer = setTimeout(() => b.classList.remove("show"), 6000);
+  }
+
+  function hideWarning() {
+    clearTimeout(warningTimer);
+    $("#warningBanner").classList.remove("show");
+  }
+
+  /* ---------------- FULLSCREEN ---------------- */
+  function requestFullscreen() {
+    const el = document.documentElement;
+    const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if (!fn) return;
+    try {
+      const p = fn.call(el);
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch (e) { /* silent */ }
+    $("#fsRestore").classList.remove("show");
+  }
+
+  function exitFullscreen() {
+    try {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        const fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (fn) {
+          const p = fn.call(document);
+          if (p && typeof p.catch === "function") p.catch(() => {});
+        }
+      }
+    } catch (e) { /* silent */ }
+    $("#fsRestore").classList.remove("show");
+  }
+
+  /* ============================================================
+     SUBMIT
+     ============================================================ */
+  async function onManualSubmit() {
+    const unatt = state.answers.filter((a) => a === null).length;
+    const done = state.answers.length - unatt;
+    const ok = await askConfirm(
+      "परीक्षा जमा करें?",
+      "आपने " + done + " प्रश्नों के उत्तर दिए हैं तथा " + unatt +
+      " प्रश्न अनुत्तरित हैं। जमा करने के बाद उत्तरों में कोई बदलाव संभव नहीं होगा।",
+      "हाँ, जमा करें"
+    );
+    if (ok) submitExam(false, "छात्र द्वारा स्वेच्छा से जमा");
+  }
+
+  function submitExam(auto, reason) {
+    if (state.submitted) return;
+    state.submitted = true;
+    examActive = false;
+
+    clearInterval(state.timerId);
+    detachGuards();
+    exitFullscreen();
+    hideWarning();
+
+    const result = buildResult(!!auto, reason);
+
+    saveResult(result);
+    localStorage.setItem(lockKey(result.name), JSON.stringify({
+      at: result.submittedAt,
+      id: result.id,
+      score: result.marks + "/" + result.totalMarks
+    }));
+
+    state.lastResult = result;
+    renderResult(result);
+    showView("view-result");
+  }
+
+  /* ============================================================
+     RESULT BUILDING
+     ============================================================ */
+  function buildResult(auto, reason) {
+    const qs = CFG.questions;
+    let correct = 0, wrong = 0, unanswered = 0;
+
+    const detail = qs.map((q, i) => {
+      const given = (state.answers[i] === undefined) ? null : state.answers[i];
+      let status;
+      if (given === null) { status = "unanswered"; unanswered++; }
+      else if (given === q.correctIndex) { status = "correct"; correct++; }
+      else { status = "wrong"; wrong++; }
+
+      return {
+        no: i + 1,
+        question: q.question,
+        options: q.options.slice(),
+        correctIndex: q.correctIndex,
+        givenIndex: given,
+        status: status,
+        explanation: q.explanation || ""
+      };
+    });
+
+    const neg = Number(CFG.negativeMarking || 0);
+    const marks = correct * Number(CFG.marksPerQuestion) - wrong * neg;
+    const totalMarks = qs.length * Number(CFG.marksPerQuestion);
+    const percentage = totalMarks > 0
+      ? Math.round((Math.max(marks, 0) / totalMarks) * 10000) / 100
+      : 0;
+    const timeTaken = Math.max(0, Math.round((Date.now() - state.startTime) / 1000));
+
+    return {
+      id: "YAK-" + Date.now().toString(36).toUpperCase() + "-" + Math.floor(Math.random() * 900 + 100),
+      name: state.student.name,
+      examTitle: CFG.examTitle,
+      instituteName: CFG.instituteName,
+      startedAt: state.startTime,
+      submittedAt: Date.now(),
+      timeTaken: timeTaken,
+      totalQuestions: qs.length,
+      attempted: correct + wrong,
+      correct: correct,
+      wrong: wrong,
+      unanswered: unanswered,
+      marks: Math.round(marks * 100) / 100,
+      totalMarks: totalMarks,
+      percentage: percentage,
+      status: percentage >= Number(CFG.passingPercentage || 40) ? "PASS" : "FAIL",
+      violations: state.violations,
+      autoSubmitted: !!auto,
+      submitReason: reason || (auto ? "स्वतः जमा" : "छात्र द्वारा जमा"),
+      detail: detail
+    };
+  }
+
+  function saveResult(result) {
+    let all = [];
+    try { all = JSON.parse(localStorage.getItem(RESULTS_KEY) || "[]"); } catch (e) { all = []; }
+    if (!Array.isArray(all)) all = [];
+    all.push(result);
+    try { localStorage.setItem(RESULTS_KEY, JSON.stringify(all)); } catch (e) { /* silent */ }
+  }
+
+  function getResults() {
+    try {
+      const all = JSON.parse(localStorage.getItem(RESULTS_KEY) || "[]");
+      return Array.isArray(all) ? all : [];
+    } catch (e) { return []; }
+  }
+
+  /* ============================================================
+     RESULT RENDERING  (प्रश्न छिपे रहते हैं)
+     ============================================================ */
+  function renderResult(r) {
+    $("#resExamTitle").textContent = r.examTitle + "  |  " + r.instituteName;
+
+    const st = $("#resStatus");
+    st.textContent = r.status === "PASS" ? "उत्तीर्ण (PASS)" : "अनुत्तीर्ण (FAIL)";
+    st.className = "status " + (r.status === "PASS" ? "pass" : "fail");
+
+    const stats = [
+      ["कुल प्रश्न", r.totalQuestions],
+      ["प्रयास किए", r.attempted],
+      ["सही उत्तर", r.correct],
+      ["गलत उत्तर", r.wrong],
+      ["अनुत्तरित", r.unanswered],
+      ["प्राप्तांक", r.marks + " / " + r.totalMarks],
+      ["प्रतिशत", r.percentage + "%"],
+      ["उल्लंघन", r.violations + " / " + CFG.maxViolations]
+    ];
+
+    const grid = $("#resStats");
+    grid.innerHTML = "";
+    stats.forEach((s) => {
+      const d = document.createElement("div");
+      d.className = "stat";
+      const k = document.createElement("div"); k.className = "k"; k.textContent = s[0];
+      const v = document.createElement("div"); v.className = "v"; v.textContent = s[1];
+      if (s[0] === "सही उत्तर") v.style.color = "#15803d";
+      if (s[0] === "गलत उत्तर") v.style.color = "#b91c1c";
+      d.appendChild(k); d.appendChild(v);
+      grid.appendChild(d);
+    });
+
+    const foot = $("#resFoot");
+    foot.innerHTML = "";
+    const lines = [
+      ["छात्र का नाम", r.name],
+      ["रोल आईडी", r.id],
+      ["परीक्षा जमा समय", new Date(r.submittedAt).toLocaleString("hi-IN")],
+      ["लिया गया समय", formatDuration(r.timeTaken)],
+      ["जमा का कारण", r.submitReason + (r.autoSubmitted ? " (स्वतः)" : "")]
+    ];
+    lines.forEach((l) => {
+      const d = document.createElement("div");
+      const b = document.createElement("b");
+      b.textContent = l[0] + ": ";
+      d.appendChild(b);
+      d.appendChild(document.createTextNode(l[1]));
+      foot.appendChild(d);
+    });
+  }
+
+  function formatDuration(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return m + " मिनट " + s + " सेकंड";
+  }
+
+  /* ============================================================
+     ADMIN TABLE
+     ============================================================ */
+  function renderAdminTable() {
+    const results = getResults();
+    const tbody = $("#adminTbody");
+    tbody.innerHTML = "";
+
+    $("#adminEmpty").style.display = results.length ? "none" : "block";
+
+    results.slice().reverse().forEach((r) => {
+      const tr = document.createElement("tr");
+
+      const cells = [
+        r.name,
+        r.id,
+        new Date(r.submittedAt).toLocaleString("hi-IN"),
+        r.marks + " / " + r.totalMarks,
+        r.percentage + "%",
+        r.status,
+        String(r.violations)
+      ];
+
+      cells.forEach((c, i) => {
+        const td = document.createElement("td");
+        td.textContent = c;
+        if (i === 5) {
+          td.style.fontWeight = "700";
+          td.style.color = r.status === "PASS" ? "#15803d" : "#b91c1c";
+        }
+        tr.appendChild(td);
+      });
+
+      const tdBtn = document.createElement("td");
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.style.padding = "7px 16px";
+      btn.style.fontSize = "13px";
+      btn.textContent = "🔒 PDF";
+      btn.addEventListener("click", () => downloadPDF(r));
+      tdBtn.appendChild(btn);
+      tr.appendChild(tdBtn);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ============================================================
+     CONFIRM MODAL
+     ============================================================ */
+  function askConfirm(title, msg, okText) {
+    return new Promise((resolve) => {
+      $("#modalTitle").textContent = title;
+      $("#modalMsg").textContent = msg;
+      $("#modalOk").textContent = okText || "पुष्टि करें";
+      $("#modalBackdrop").classList.add("show");
+
+      const finish = (val) => {
+        $("#modalBackdrop").classList.remove("show");
+        $("#modalOk").onclick = null;
+        $("#modalCancel").onclick = null;
+        resolve(val);
+      };
+      $("#modalOk").onclick = () => finish(true);
+      $("#modalCancel").onclick = () => finish(false);
+    });
+  }
+
+  /* ============================================================
+     PASSWORD-PROTECTED PDF  (Answer Booklet + Score Card)
+     ============================================================ */
+  function buildAnswerSheetCanvases(r) {
+    const W = 1240, H = 1754, M = 72;   // A4 @ ~150 DPI
+    const NAVY = "#0b2545", NAVY2 = "#1e3a8a", GOLD = "#c9a227";
+    const OK = "#15803d", BAD = "#b91c1c", MUTED = "#5b6b84", LINE = "#c8d3e3";
+
+    const pages = [];
+    let page = null, ctx = null, y = 0;
+
+    function newPage() {
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const x = c.getContext("2d");
+      x.fillStyle = "#ffffff";
+      x.fillRect(0, 0, W, H);
+      page = { c: c };
+      ctx = x;
+      y = M;
+    }
+
+    function setFont(size, bold, serif) {
+      ctx.font = (bold ? "bold " : "") + size + "px " +
+        (serif ? "Georgia, 'Times New Roman', serif" : "'Segoe UI', Tahoma, sans-serif");
+    }
+
+    function wrap(text, maxW) {
+      const words = String(text).split(/\s+/);
+      const lines = [];
+      let line = "";
+      for (let i = 0; i < words.length; i++) {
+        const t = line ? line + " " + words[i] : words[i];
+        if (ctx.measureText(t).width > maxW && line) {
+          lines.push(line);
+          line = words[i];
+        } else {
+          line = t;
+        }
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function ensure(h) {
+      if (y + h > H - M) {
+        pages.push(page.c);
+        newPage();
+      }
+    }
+
+    function line(text, opts) {
+      opts = opts || {};
+      const size = opts.size || 18;
+      const bold = !!opts.bold;
+      const serif = !!opts.serif;
+      const color = opts.color || NAVY;
+      const x = opts.x || M;
+      const indent = opts.indent || 0;
+      const maxW = opts.maxW || (W - 2 * M);
+      const L = opts.lh || Math.round(size * 1.55);
+
+      ensure(L);
+      setFont(size, bold, serif);
+      ctx.fillStyle = color;
+
+      const lines = wrap(text, maxW - indent);
+      for (let i = 0; i < lines.length; i++) {
+        ensure(L);
+        setFont(size, bold, serif);
+        ctx.fillStyle = color;
+        y += L;
+        ctx.fillText(lines[i], x + indent, y);
+      }
+      if (opts.gap) { ensure(opts.gap); y += opts.gap; }
+    }
+
+    function rule(gap) {
+      ensure(20);
+      ctx.strokeStyle = LINE;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(M, y + (gap || 14));
+      ctx.lineTo(W - M, y + (gap || 14));
+      ctx.stroke();
+      y += (gap || 14) + 14;
+    }
+
+    function infoRow(label, value) {
+      ensure(36);
+      setFont(18, true, false);
+      ctx.fillStyle = MUTED;
+      ctx.fillText(label, M, y + 24);
+      setFont(18, false, false);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText(String(value), M + 320, y + 24);
+      y += 36;
+    }
+
+    /* ---------- PAGE 1 : HEADER ---------- */
+    newPage();
+
+    ctx.fillStyle = NAVY;
+    ctx.fillRect(0, 0, W, 152);
+    ctx.fillStyle = GOLD;
+    ctx.fillRect(0, 152, W, 5);
+
+    ctx.fillStyle = "#ffffff";
+    setFont(38, true, true);
+    ctx.fillText(r.instituteName || "योग आरोग्य केंद्र", M, 74);
+    setFont(20, false, true);
+    ctx.fillStyle = "#c7d5ea";
+    ctx.fillText("ऑनलाइन परीक्षा पोर्टल — उत्तर पुस्तिका एवं स्कोर कार्ड", M, 112);
+
+    y = 200;
+
+    line("आधिकारिक उत्तर पुस्तिका (Confidential)", { size: 27, bold: true, serif: true, color: NAVY2, gap: 6 });
+    line("यह दस्तावेज़ पासवर्ड-सुरक्षित है एवं केवल अधिकृत एडमिन द्वारा खोला जा सकता है।",
+      { size: 15, color: MUTED, gap: 18 });
+
+    /* ---------- STUDENT DETAILS ---------- */
+    ensure(240);
+    const pTop = y;
+    ctx.fillStyle = "#f4f7fb";
+    ctx.fillRect(M, pTop, W - 2 * M, 210);
+    ctx.strokeStyle = LINE;
+    ctx.strokeRect(M, pTop, W - 2 * M, 210);
+
+    const stats = [
+      ["कुल प्रश्न", r.totalQuestions],
+      ["प्रयास किए", r.attempted],
+      ["सही उत्तर", r.correct],
+      ["गलत उत्तर", r.wrong],
+      ["अनुत्तरित", r.unanswered],
+      ["प्राप्तांक", r.marks + " / " + r.totalMarks],
+      ["प्रतिशत", r.percentage + "%"],
+      ["परिणाम", r.status === "PASS" ? "उत्तीर्ण" : "अनुत्तीर्ण"]
+    ];
+
+    const colW = (W - 2 * M) / 4;
+    stats.forEach((s, i) => {
+      const cx = M + (i % 4) * colW;
+      const cy = pTop + Math.floor(i / 4) * 105 + 34;
+      setFont(15, false, false);
+      ctx.fillStyle = MUTED;
+      ctx.fillText(s[0], cx + 22, cy);
+      setFont(27, true, true);
+      if (s[0] === "परिणाम") ctx.fillStyle = (r.status === "PASS") ? OK : BAD;
+      else if (s[0] === "सही उत्तर") ctx.fillStyle = OK;
+      else if (s[0] === "गलत उत्तर") ctx.fillStyle = BAD;
+      else ctx.fillStyle = NAVY2;
+      ctx.fillText(String(s[1]), cx + 22, cy + 44);
+    });
+
+    y = pTop + 236;
+
+    infoRow("छात्र का नाम", r.name);
+    infoRow("रोल आईडी", r.id);
+    infoRow("परीक्षा", r.examTitle);
+    infoRow("परीक्षा आरंभ", new Date(r.startedAt).toLocaleString("hi-IN"));
+    infoRow("उत्तर जमा समय", new Date(r.submittedAt).toLocaleString("hi-IN"));
+    infoRow("लिया गया समय", formatDuration(r.timeTaken));
+    infoRow("जमा का कारण", r.submitReason + (r.autoSubmitted ? " (स्वतः)" : ""));
+    infoRow("नियम उल्लंघन", r.violations + " / " + CFG.maxViolations);
+
+    y += 14;
+    rule(10);
+
+    /* ---------- DETAILED ANSWER REVIEW ---------- */
+    line("विस्तृत उत्तर समीक्षा (Answer Review)", { size: 23, bold: true, serif: true, color: NAVY, gap: 16 });
+
+    r.detail.forEach((d) => {
+      line("प्रश्न " + d.no + ". " + d.question,
+        { size: 19, bold: true, serif: true, color: NAVY, gap: 8 });
+
+      d.options.forEach((op, idx) => {
+        const letter = String.fromCharCode(65 + idx);
+        const isCorrect = (idx === d.correctIndex);
+        const isGiven = (idx === d.givenIndex);
+
+        let tag = "";
+        let color = "#334155";
+
+        if (isCorrect && isGiven) { tag = "  ✔ (आपका उत्तर — सही)"; color = OK; }
+        else if (isCorrect) { tag = "  ✔ (सही उत्तर)"; color = OK; }
+        else if (isGiven) { tag = "  ✘ (आपका उत्तर — गलत)"; color = BAD; }
+
+        line(letter + ") " + op + tag, { size: 17, color: color, indent: 28, gap: 2 });
+      });
+
+      const verdict =
+        d.status === "correct" ? "परिणाम: सही उत्तर  ✔  (" + CFG.marksPerQuestion + " अंक)" :
+        d.status === "wrong" ? "परिणाम: गलत उत्तर  ✘  (0 अंक)" :
+        "परिणाम: अनुत्तरित  —  (0 अंक)";
+
+      line(verdict, {
+        size: 17, bold: true, indent: 28, gap: 2,
+        color: d.status === "correct" ? OK : (d.status === "wrong" ? BAD : MUTED)
+      });
+
+      if (d.explanation) {
+        line("व्याख्या: " + d.explanation, { size: 16, color: "#475569", indent: 28, gap: 2 });
+      }
+
+      rule(14);
+    });
+
+    /* ---------- DECLARATION ---------- */
+    line("यह उत्तर पुस्तिका पोर्टल द्वारा स्वतः निर्मित है एवं परीक्षा नियंत्रक हेतु आधिकारिक अभिलेख है।",
+      { size: 15, color: MUTED, gap: 10 });
+    line("PDF खोलने हेतु एडमिन पासवर्ड आवश्यक है।",
+      { size: 15, bold: true, color: NAVY2 });
+
+    pages.push(page.c);
+
+    /* ---------- FOOTER ON EVERY PAGE ---------- */
+    pages.forEach((c, i) => {
+      const x = c.getContext("2d");
+      x.strokeStyle = LINE;
+      x.lineWidth = 1;
+      x.beginPath();
+      x.moveTo(M, H - 62);
+      x.lineTo(W - M, H - 62);
+      x.stroke();
+
+      x.font = "15px 'Segoe UI', Tahoma, sans-serif";
+      x.fillStyle = MUTED;
+      x.fillText((r.instituteName || "योग आरोग्य केंद्र") + " — ऑनलाइन परीक्षा पोर्टल", M, H - 34);
+
+      const pg = "पृष्ठ " + (i + 1) + " / " + pages.length;
+      x.fillText(pg, W - M - x.measureText(pg).width, H - 34);
+    });
+
+    return pages;
+  }
+
+  function safeFileName(name) {
+    return String(name || "Student").replace(/[^\w\u0900-\u097F]+/g, "_").slice(0, 40);
+  }
+
+  function downloadPDF(result) {
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      alert("PDF लाइब्रेरी लोड नहीं हो सकी। कृपया इंटरनेट कनेक्शन जाँचें और पृष्ठ पुनः लोड करें।");
+      return;
+    }
+
+    try {
+      const pages = buildAnswerSheetCanvases(result);
+      const jsPDF = window.jspdf.jsPDF;
+
+      const doc = new jsPDF({
+        unit: "pt",
+        format: "a4",
+        compress: true,
+        encryption: {
+          userPassword: String(CFG.pdfPassword),
+          ownerPassword: String(CFG.adminPassword),
+          userPermissions: ["print"]
+        }
+      });
+
+      pages.forEach((c, i) => {
+        if (i > 0) doc.addPage();
+        const imgData = c.toDataURL("image/jpeg", 0.92);
+        doc.addImage(imgData, "JPEG", 0, 0, 595.28, 841.89);
+      });
+
+      doc.save("AnswerSheet_" + safeFileName(result.name) + "_" + result.id + ".pdf");
+    } catch (err) {
+      console.error(err);
+      alert("PDF निर्माण में त्रुटि हुई: " + err.message);
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
